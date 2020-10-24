@@ -15,6 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import server.ClientHandler;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -99,8 +100,8 @@ public class Controller implements Initializable {
 
             new Thread(() -> {
                 try {
-                    //цикл аутентификации
-                    while (true) {
+
+                    while (true) {  //цикл аутентификации
                         String str = in.readUTF();
 
                         if (str.startsWith("/authok ")) {
@@ -120,8 +121,8 @@ public class Controller implements Initializable {
                         textArea.appendText(str + "\n");
                     }
 
-                    //цикл работы
-                    while (true) {
+
+                    while (true) {  //цикл работы
                         String str = in.readUTF();
 
                         if (str.startsWith("/")) {
@@ -145,13 +146,7 @@ public class Controller implements Initializable {
                     e.printStackTrace();
                 } finally {
                     setAuthenticated(false);
-                    try {
-                        socket.close();
-                        in.close();
-                        out.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    closeThis();
                 }
             }).start();
 
@@ -238,5 +233,14 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
 
+    }
+    public void closeThis() {
+        try {
+            socket.close();
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
